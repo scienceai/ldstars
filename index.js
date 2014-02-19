@@ -127,9 +127,11 @@ function _isLd(ctx){
 
   for(var key in ctx){
     var id = (typeof ctx[key] === 'string') ? ctx[key] : ctx[key]['@id'];
-    var x = id.split(':')[0];
-    if(x !== '_') {
-      return true;
+    if(! (/^http:\/\/www.w3.org\/2001\/XMLSchema#?$/.test(id)) ){
+      var x = id.split(':')[0];
+      if(x !== '_') {
+        return true;
+      }
     }
   };
 
