@@ -1,29 +1,29 @@
 {
   "name": "ldstars",
-  "version": "0.0.0",
-  "description": "Rate (as in five stars linked data) a datapackage.jsonld ",
+  "version": "0.0.1",
+  "description": "Rate (as in five ldstars linked data) a datapackage.jsonld ",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/standard-analytics/stars.git"
+    "url": "git://github.com/standard-analytics/ldstars.git"
   },
   "keywords": [
     "rate",
     "linked-data",
     "five",
-    "stars",
+    "ldstars",
     "certification",
     "hyperdata"
   ],
   "author": "Sebastien Ballesteros",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/standard-analytics/stars/issues"
+    "url": "https://github.com/standard-analytics/ldstars/issues"
   },
-  "homepage": "https://github.com/standard-analytics/stars",
+  "homepage": "https://github.com/standard-analytics/ldstars",
   "devDependencies": {
     "mocha": "~1.17.1"
   }

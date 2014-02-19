@@ -44,7 +44,7 @@ module.exports = function(dpkg){
     dpkg.dataset.forEach(function(x){
       n++;
 
-      if (x.distribution && (x.distribution.encodingFormat in data)){
+      if (x.distribution && data[x.distribution.encodingFormat]){
         scores.of++;
       }
 
@@ -64,7 +64,7 @@ module.exports = function(dpkg){
     dpkg.code.forEach(function(x){
       n++;
 
-      if (x.programmingLanguage && (x.programmingLanguage.name.toLowerCase() in lang)){
+      if (x.programmingLanguage && lang[x.programmingLanguage.name.toLowerCase()]){
         scores.of++;
       }
 
@@ -88,7 +88,7 @@ module.exports = function(dpkg){
     dpkg.figure.forEach(function(x){
       n++;
 
-      if (x.encodingFormat in img){
+      if (img[x.encodingFormat]){
         scores.of++;
       }
 

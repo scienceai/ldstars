@@ -18,6 +18,12 @@ describe('stars', function(){
     assert.deepEqual(s, { ol: false, of: true, re: false, ld: false });
   });
 
+  it('should not give an "of" star if dataset do not use open format', function(){
+    var s = stars({dataset: [{distribution: {encodingFormat: 'xls'}}]});   
+    assert.deepEqual(s, { ol: false, of: false, re: false, ld: false });
+  });
+
+
   it('should give an "of" star if code use open format', function(){
     var s = stars({code: [{programmingLanguage: {name: 'python'}}]});   
     assert.deepEqual(s, { ol: false, of: true, re: false, ld: false });
