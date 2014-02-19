@@ -22,7 +22,7 @@ var data = {
 var img = {
   jpg: true,
   png: true,
-  gig: true,
+  gif: true,
   svg: true
 };
 
