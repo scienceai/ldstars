@@ -9,7 +9,7 @@ describe('stars', function(){
   });
 
   it('should give an "ol" star if license is open', function(){
-    var s = stars({license: 'CC0-1'});   
+    var s = stars({license: 'CC0-1.0'});   
     assert.deepEqual(s, { ol: true, of: false, re: false, ld: false });
   });
 

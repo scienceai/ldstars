@@ -1,6 +1,6 @@
 //TODO scrap from http://spdx.org/licenses/
 var licenses= {
-  'CC0-1': true
+  'CC0-1.0': true
 };
 
 var lang = {
