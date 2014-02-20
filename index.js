@@ -29,82 +29,33 @@ var img = {
 /**
  * Supposes that dpkg is a valid dpkg
  */
-module.exports = function(dpkg){
+function rate(dpkg){
 
   var scores = {
-    ol: !! (dpkg.license && (dpkg.license in licenses)), //open license
+    ol: !! (dpkg.license && licenses[dpkg.license]), //open license
     of: 0, //open format
+    uri: 0, //uri
     re: 0, //re-usable for human and machine => structured, description and metadata
     ld: 0  //linked data -> URL or input or @context
   };
 
   var n = 0;
 
-  if ('dataset' in dpkg){
-    dpkg.dataset.forEach(function(x){
-      n++;
-
-      if (x.distribution && data[x.distribution.encodingFormat]){
-        scores.of++;
-      }
-
-      if ( (x.description && x.description.trim()) || (x.about &&  Object.keys(x.about).length) ) {
-        scores.re++;
-      }
-
-      if( (x.isBasedOnUrl && x.isBasedOnUrl.length) || _isLd(x['@context']) ){
-        scores.ld++;
-      }
-      
-    });    
-
+  if(dpkg.description){
+    scores.re++;
   }
 
-  if ('code' in dpkg){
-    dpkg.code.forEach(function(x){
-      n++;
-
-      if (x.programmingLanguage && lang[x.programmingLanguage.name.toLowerCase()]){
-        scores.of++;
-      }
-
-      if (x.description && x.description.trim()){
-        scores.re++;
-      }
-
-      if ( (x.isBasedOnUrl && x.isBasedOnUrl.length) ||
-           (x.targetProduct &&  x.targetProduct.input && Object.keys(x.targetProduct.input).length) ||
-           x.discussionUrl ||
-           x.codeRepository
-         ) {
-        scores.ld++;
-      }
-
-    });
-  }
-
-
-  if('figure' in dpkg){
-    dpkg.figure.forEach(function(x){
-      n++;
-
-      if (img[x.encodingFormat]){
-        scores.of++;
-      }
-
-      if ((x.description && x.description.trim()) ||
-          x.catpion
-         ){
-        scores.re++;
-      }
-      
-      if (x.isBasedOnUrl && x.isBasedOnUrl.length){
-        scores.ld++;
-      }
-
-    });      
-
-  }
+  ['dataset', 'code', 'figure'].forEach(function(t){
+    if(t in dpkg){
+      dpkg[t].forEach(function(r){
+        var grade = rateResource(r);
+        for(var key in grade){
+          scores[key] += grade[key];
+        }
+        n++;
+      });
+    }
+  });
 
 
   ['of', 're', 'ld'].forEach(function(t){
@@ -115,6 +66,23 @@ module.exports = function(dpkg){
   return scores;
 };
 
+
+function rateResource(r, license){
+  return { 
+    ol: !! (license && licenses[license]),
+    uri: !! r['@id'],
+    of: !! (img[r.encodingFormat] || 
+            (r.distribution && data[r.distribution.encodingFormat]) ||
+            (r.programmingLanguage && lang[r.programmingLanguage.name.toLowerCase()])),
+    re: !! ( (r.description && r.description.trim()) || (r.about &&  Object.keys(r.about).length) || r.caption ),
+    ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
+             (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
+             r.discussionUrl ||
+             r.codeRepository ||
+             _isLd(r['@context'])
+           )
+  };  
+};
 
 
 /**
@@ -138,3 +106,6 @@ function _isLd(ctx){
   return false;
 
 };
+
+exports.rate = rate;
+exports.rateResource = rateResource;
