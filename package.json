@@ -1,6 +1,6 @@
 {
   "name": "ldstars",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Rate (as in five ldstars linked data) a datapackage.jsonld ",
   "main": "index.js",
   "scripts": {

@@ -11,19 +11,20 @@ var lang = {
 };
 
 var data = {
-  csv: true,
-  xls: false,
-  xlsx: false,
-  json: true,
-  jsonld: true,
-  ldjson: true
+  'text/csv': true,
+  'application/vnd.ms-excel': false,
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': false,
+  'application/json': true,
+  'application/ld+json': true,
+  'application/x-ldjson': true
 };
 
 var img = {
-  jpg: true,
-  png: true,
-  gif: true,
-  svg: true
+  'image/png':true,
+  'image/jpeg':true,
+  'image/tiff':true,
+  'image/gif':true,
+  'image/svg+xml':true
 };
 
 /**
@@ -66,7 +67,6 @@ function rate(dpkg){
   return scores;
 };
 
-
 function rateResource(r, license){
   return { 
     ol: !! (license && licenses[license]),
@@ -77,6 +77,7 @@ function rateResource(r, license){
     re: !! ( (r.description && r.description.trim()) || (r.about &&  Object.keys(r.about).length) || r.caption ),
     ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
              (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
+             (r._input && r._input.length) ||
              r.discussionUrl ||
              r.codeRepository ||
              _isLd(r['@context'])

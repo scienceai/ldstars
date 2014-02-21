@@ -14,12 +14,12 @@ describe('stars', function(){
   });
 
   it('should give an "of" star if dataset use open format', function(){
-    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'csv'}}]});   
+    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'text/csv'}}]});   
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
   it('should not give an "of" star if dataset do not use open format', function(){
-    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'xls'}}]});   
+    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'application/vnd.ms-excel'}}]});   
     assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: false });
   });
 
@@ -30,7 +30,7 @@ describe('stars', function(){
   });
 
   it('should give an "of" star if figure use open format', function(){
-    var s = ldstars.rate({figure: [{encodingFormat: 'png'}]});   
+    var s = ldstars.rate({figure: [{encodingFormat: 'image/png'}]});   
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
