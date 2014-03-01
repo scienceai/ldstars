@@ -26,5 +26,8 @@
   "homepage": "https://github.com/standard-analytics/ldstars",
   "devDependencies": {
     "mocha": "~1.17.1"
+  },
+  "dependencies": {
+    "is-url": "^1.0.0"
   }
 }

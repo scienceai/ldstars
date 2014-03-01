@@ -1,3 +1,5 @@
+var isUrl = require('is-url');
+
 //TODO scrap from http://spdx.org/licenses/
 var licenses= {
   'CC0-1.0': true
@@ -37,7 +39,7 @@ function rate(dpkg){
     of: 0, //open format
     uri: 0, //uri
     re: 0, //re-usable for human and machine => structured, description and metadata
-    ld: 0  //linked data -> URL or input or @context
+    ld: 0  //linked data -> URL or input or about
   };
 
   var n = 0;
@@ -74,33 +76,29 @@ function rateResource(r, license){
     of: !! (img[r.encodingFormat] || 
             (r.distribution && data[r.distribution.encodingFormat]) ||
             (r.programmingLanguage && lang[r.programmingLanguage.name.toLowerCase()])),
-    re: !! ( (r.description && r.description.trim()) || (r.about &&  Object.keys(r.about).length) || r.caption ),
+    re: !! ( (r.description && r.description.trim()) || (r.about &&  r.about.description) || r.caption ),
     ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
              (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
              (r._input && r._input.length) ||
              r.discussionUrl ||
              r.codeRepository ||
-             _isLd(r['@context'])
+             _isLd(r.about)
            )
   };  
 };
 
 
 /**
- * check if an @context got urls and not only local node
+ * check if an about got urls and not only local node
  */
-function _isLd(ctx){
-  if(!ctx){
+function _isLd(about){
+  if(!about){
     return false;
   }
 
-  for(var key in ctx){
-    var id = (typeof ctx[key] === 'string') ? ctx[key] : ctx[key]['@id'];
-    if(! (/^http:\/\/www.w3.org\/2001\/XMLSchema#?$/.test(id)) ){
-      var x = id.split(':')[0];
-      if(x !== '_') {
-        return true;
-      }
+  for(var i=0; i<about.length; i++){
+    if(about[i].sameAs && isUrl(about[i].sameAs)){
+      return true;
     }
   };
 
