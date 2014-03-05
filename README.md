@@ -1,7 +1,7 @@
 stars
 =====
 
-Rate (as in five stars linked data) a datapackage.jsonld
+Rate (as in five stars linked data) a package.jsonld
 
 
 # test

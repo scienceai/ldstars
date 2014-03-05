@@ -30,12 +30,12 @@ var img = {
 };
 
 /**
- * Supposes that dpkg is a valid dpkg
+ * Supposes that pkg is a valid pkg
  */
-function rate(dpkg){
+function rate(pkg){
 
   var scores = {
-    ol: !! (dpkg.license && licenses[dpkg.license]), //open license
+    ol: !! (pkg.license && licenses[pkg.license]), //open license
     of: 0, //open format
     uri: 0, //uri
     re: 0, //re-usable for human and machine => structured, description and metadata
@@ -44,13 +44,13 @@ function rate(dpkg){
 
   var n = 0;
 
-  if(dpkg.description){
+  if(pkg.description){
     scores.re++;
   }
 
   ['dataset', 'code', 'figure'].forEach(function(t){
-    if(t in dpkg){
-      dpkg[t].forEach(function(r){
+    if(t in pkg){
+      pkg[t].forEach(function(r){
         var grade = rateResource(r);
         for(var key in grade){
           scores[key] += grade[key];
