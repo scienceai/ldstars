@@ -76,7 +76,7 @@ function rateResource(r, license){
     of: !! (img[r.encodingFormat] || 
             (r.distribution && data[r.distribution.encodingFormat]) ||
             (r.programmingLanguage && lang[r.programmingLanguage.name.toLowerCase()])),
-    re: !! ( (r.description && r.description.trim()) || (r.about &&  r.about.description) || r.caption ),
+    re: !! ( (r.description && r.description.trim()) || _isRe(r.about) || r.caption ),
     ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
              (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
              (r._input && r._input.length) ||
@@ -89,7 +89,7 @@ function rateResource(r, license){
 
 
 /**
- * check if an about got urls and not only local node
+ * check if an about got urls
  */
 function _isLd(about){
   if(!about){
@@ -103,7 +103,28 @@ function _isLd(about){
   };
 
   return false;
+};
 
+/**
+ * check if an about got description
+ */
+function _isRe(about){
+  if(!about){
+    return false;
+  }
+
+  if(Array.isArray(about)){
+    for(var i=0; i<about.length; i++){
+      if(about[i].description && about[i].description.trim()){
+        return true;
+      }
+    };
+  } else {
+    return about.description && about.description.trim();
+  }
+
+
+  return false;
 };
 
 exports.rate = rate;

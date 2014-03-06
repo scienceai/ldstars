@@ -44,8 +44,8 @@ describe('stars', function(){
     });
   });
 
-  it('should give a "re" star if resource got about not use for describing data content', function(){
-    var s = ldstars.rate({dataset: [{about: {description: 'lalalala'}}]});   
+  it('should give a "re" star if resource got about with description', function(){
+    var s = ldstars.rate({dataset: [{about: [{description: 'lalalala'}]}]});
     assert.deepEqual(s, { ol: false, of: false, re: true, uri:false, ld: false });
   });
 
