@@ -32,8 +32,10 @@ var img = {
 /**
  * Supposes that pkg is a valid pkg
  */
-function rate(pkg){
+function rate(pkg, opts){
 
+  opts = opts || {};
+  
   var scores = {
     ol: !! (pkg.license && licenses[pkg.license]), //open license
     of: 0, //open format
@@ -64,13 +66,20 @@ function rate(pkg){
   ['of', 're', 'ld'].forEach(function(t){
     scores[t] = (scores[t]/n >= 0.5);
   });
+ 
+  return (opts.string) ? toString(scores): scores;
 
-
-  return scores;
 };
 
-function rateResource(r, license){
-  return { 
+function rateResource(r, license, opts){
+  if((arguments.length === 2) && typeof license !== 'string'){
+    opts = license;
+    license = undefined;
+  }
+
+  opts = opts || {};
+
+  var scores = { 
     ol: !! (license && licenses[license]),
     uri: !! r['@id'],
     of: !! (img[r.encodingFormat] || 
@@ -84,7 +93,22 @@ function rateResource(r, license){
              r.codeRepository ||
              _isLd(r.about)
            )
-  };  
+  }; 
+
+  return (opts.string) ? toString(scores): scores;
+ 
+};
+
+function toString(scores){
+
+  var s = [];
+  ['ol', 're', 'of', 'uri', 'ld'].forEach(function(x){
+    if(scores[x]){
+      s.push(x);
+    }
+  });
+
+  return s.join('-');  
 };
 
 
@@ -129,3 +153,4 @@ function _isRe(about){
 
 exports.rate = rate;
 exports.rateResource = rateResource;
+exports.toString = toString;

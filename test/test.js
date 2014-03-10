@@ -87,4 +87,26 @@ describe('stars', function(){
     assert.deepEqual(s, { ol: false, of: false, re: true, uri:false, ld: false });
   });
 
+  it('should convert a score object to a string', function(){
+    var s = ldstars.toString({ ol: false, of: false, re: true, uri:false, ld: true });   
+    assert.equal(s, 're-ld');
+  });
+
+
+  it('should give an "of" star if code use open format and return a string', function(){
+    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]}, {string: true});   
+    assert.equal(s, 'of');
+  });
+
+  it('should give an "ol-of" rate', function(){
+    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, 'CC0-1.0', {string: true});   
+    assert.equal(s, 'ol-of');
+  });
+
+  it('should give an "of" rate', function(){
+    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, {string: true});   
+    assert.equal(s, 'of');
+  });
+
+
 });
