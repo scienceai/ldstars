@@ -75,6 +75,11 @@ describe('stars', function(){
     assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: true });
   });
 
+  it('should give an "of and ld" star if article use open format and citation with URL', function(){
+    var s = ldstars.rate({article: [{encoding: {encodingFormat: 'text/x-markdown'}, citation: [{url:'http://ex.com'}]}]});   
+    assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: true });
+  });
+
   it('should give a star if more than half of resource are good', function(){
     var ctnr = {
       dataset: [ {description:'a'} ],

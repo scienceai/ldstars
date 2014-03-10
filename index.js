@@ -29,6 +29,14 @@ var img = {
   'image/svg+xml':true
 };
 
+var article = {
+  'application/x-tex': true,
+  'application/pdf': true,
+  'text/x-markdown': true,
+  'application/msword': false,
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': false
+};
+
 /**
  * Supposes that pkg is a valid pkg
  */
@@ -39,9 +47,9 @@ function rate(pkg, opts){
   var scores = {
     ol: !! (pkg.license && licenses[pkg.license]), //open license
     of: 0, //open format
-    uri: 0, //uri
-    re: 0, //re-usable for human and machine => structured, description and metadata
-    ld: 0  //linked data -> URL or input or about
+    uri: 0, //uri TODO check pkg level stuff
+    re: 0, //re-usable for human and machine => structured, description and metadata TODO check pkg level stuff
+    ld: 0  //linked data -> URL or input or about or isBasedOnUrl TODO check pkg level stuff
   };
 
   var n = 0;
@@ -50,7 +58,7 @@ function rate(pkg, opts){
     scores.re++;
   }
 
-  ['dataset', 'code', 'figure'].forEach(function(t){
+  ['dataset', 'code', 'figure', 'article'].forEach(function(t){
     if(t in pkg){
       pkg[t].forEach(function(r){
         var grade = rateResource(r);
@@ -62,11 +70,10 @@ function rate(pkg, opts){
     }
   });
 
-
-  ['of', 're', 'ld'].forEach(function(t){
+  ['of', 're', 'uri', 'ld'].forEach(function(t){
     scores[t] = (scores[t]/n >= 0.5);
   });
- 
+  
   return (opts.string) ? toString(scores): scores;
 
 };
@@ -83,6 +90,7 @@ function rateResource(r, license, opts){
     ol: !! (license && licenses[license]),
     uri: !! r['@id'],
     of: !! (img[r.encodingFormat] || 
+            article[r.encoding && r.encoding.encodingFormat] ||
             (r.distribution && data[r.distribution.encodingFormat]) ||
             (r.programmingLanguage && lang[r.programmingLanguage.name.toLowerCase()])),
     re: !! ( (r.description && r.description.trim()) || _isRe(r.about) || r.caption ),
@@ -91,12 +99,12 @@ function rateResource(r, license, opts){
              (r._input && r._input.length) ||
              r.discussionUrl ||
              r.codeRepository ||
-             _isLd(r.about)
+             _isLdAbout(r.about) ||
+             _isLdCitation(r.citation)
            )
   }; 
 
-  return (opts.string) ? toString(scores): scores;
- 
+  return (opts.string) ? toString(scores): scores; 
 };
 
 function toString(scores){
@@ -115,7 +123,7 @@ function toString(scores){
 /**
  * check if an about got urls
  */
-function _isLd(about){
+function _isLdAbout(about){
   if(!about){
     return false;
   }
@@ -128,6 +136,24 @@ function _isLd(about){
 
   return false;
 };
+
+/**
+ * check if an about got urls
+ */
+function _isLdCitation(citation){
+  if(!citation){
+    return false;
+  }
+
+  for(var i=0; i<citation.length; i++){
+    if(citation[i].url && isUrl(citation[i].url)){
+      return true;
+    }
+  };
+
+  return false;
+};
+
 
 /**
  * check if an about got description
