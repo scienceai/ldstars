@@ -47,12 +47,20 @@ function rate(pkg, opts){
   var scores = {
     ol: !! (pkg.license && licenses[pkg.license]), //open license
     of: 0, //open format
-    uri: 0, //uri TODO check pkg level stuff
-    re: 0, //re-usable for human and machine => structured, description and metadata TODO check pkg level stuff
-    ld: 0  //linked data -> URL or input or about or isBasedOnUrl TODO check pkg level stuff
+    uri: 0, //uri
+    re: 0, //re-usable for human and machine => structured, description and metadata
+    ld: 0  //linked data -> URL or input or about or isBasedOnUrl
   };
 
   var n = 0;
+
+  if(pkg['@id']){
+    scores.uri++;
+  }
+  
+  if(pkg.isBasedOnUrl || _isLdCitation(pkg.citation)){
+    scores.ld++;
+  }
 
   if(pkg.description){
     scores.re++;
