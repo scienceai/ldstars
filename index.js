@@ -94,8 +94,6 @@ function rateResource(r, license, opts){
 
   opts = opts || {};
 
-  console.log(r);
-
   var scores = {
     ol: !! (license && licenses[license]),
     uri: !! r['@id'],
