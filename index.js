@@ -43,7 +43,7 @@ var article = {
 function rate(pkg, opts){
 
   opts = opts || {};
-  
+
   var scores = {
     ol: !! (pkg.license && licenses[pkg.license]), //open license
     of: 0, //open format
@@ -57,7 +57,7 @@ function rate(pkg, opts){
   if(pkg['@id']){
     scores.uri++;
   }
-  
+
   if(pkg.isBasedOnUrl || _isLdCitation(pkg.citation)){
     scores.ld++;
   }
@@ -81,7 +81,7 @@ function rate(pkg, opts){
   ['of', 're', 'uri', 'ld'].forEach(function(t){
     scores[t] = (scores[t]/n >= 0.5);
   });
-  
+
   return (opts.string) ? toString(scores): scores;
 
 };
@@ -94,13 +94,15 @@ function rateResource(r, license, opts){
 
   opts = opts || {};
 
-  var scores = { 
+  console.log(r);
+
+  var scores = {
     ol: !! (license && licenses[license]),
     uri: !! r['@id'],
-    of: !! (img[r.encodingFormat] || 
+    of: !! (img[r.encodingFormat] ||
             article[r.encoding && r.encoding.encodingFormat] ||
             (r.distribution && data[r.distribution.encodingFormat]) ||
-            (r.programmingLanguage && lang[r.programmingLanguage.name.toLowerCase()])),
+            (r.programmingLanguage && r.programmingLanguage.name && lang[r.programmingLanguage.name.toLowerCase()])),
     re: !! ( (r.description && r.description.trim()) || _isRe(r.about) || r.caption ),
     ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
              (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
@@ -110,9 +112,9 @@ function rateResource(r, license, opts){
              _isLdAbout(r.about) ||
              _isLdCitation(r.citation)
            )
-  }; 
+  };
 
-  return (opts.string) ? toString(scores): scores; 
+  return (opts.string) ? toString(scores): scores;
 };
 
 function toString(scores){
@@ -124,7 +126,7 @@ function toString(scores){
     }
   });
 
-  return s.join('-');  
+  return s.join('-');
 };
 
 
