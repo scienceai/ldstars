@@ -1,7 +1,7 @@
 {
   "name": "ldstars",
-  "version": "0.3.4",
-  "description": "Rate (as in five ldstars linked data) a datapackage.jsonld ",
+  "version": "0.4.0",
+  "description": "Rate (as in five ldstars linked data) a package.jsonld ",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha"

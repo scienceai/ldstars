@@ -1,18 +1,12 @@
 var isUrl = require('is-url');
 
 //TODO scrap from http://spdx.org/licenses/
-var licenses= {
+var LICENSES = {
   'CC0-1.0': true
 };
 
-var lang = {
-  r: true,
-  python: true,
-  matlab: false,
-  c: true
-};
 
-var data = {
+var DATA = {
   'text/csv': true,
   'application/vnd.ms-excel': false,
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': false,
@@ -21,7 +15,7 @@ var data = {
   'application/x-ldjson': true
 };
 
-var img = {
+var FIGURE = {
   'image/png':true,
   'image/jpeg':true,
   'image/tiff':true,
@@ -29,13 +23,47 @@ var img = {
   'image/svg+xml':true
 };
 
-var article = {
+var ARTICLE = {
   'application/x-tex': true,
   'application/pdf': true,
   'text/x-markdown': true,
   'application/msword': false,
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': false
 };
+
+var VIDEO = {
+  'video/avi': true,
+  'video/mpeg': true,
+  'video/mp4': true,
+  'video/ogg': true,
+  'video/quicktime': false,
+  'video/webm': true,
+  'video/x-matroska': true,
+  'video/x-ms-wmv': false,
+  'audio/x-flv': false
+};
+
+var AUDIO = {
+  'audio/basic': true,
+  'audio/L24': true,
+  'audio/mp4': true,
+  'audio/mpeg': true,
+  'audio/ogg': true,
+  'audio/opus': true,
+  'audio/orbis': true,
+  'audio/vorbis': true,
+  'audio/vnd.rn-realaudio': true,
+  'audio/vnd.wave': false,
+  'audio/webl':true
+};
+
+var LANG = {
+  r: true,
+  python: true,
+  matlab: false,
+  c: true
+};
+
 
 /**
  * Supposes that pkg is a valid pkg
@@ -45,7 +73,7 @@ function rate(pkg, opts){
   opts = opts || {};
 
   var scores = {
-    ol: !! (pkg.license && licenses[pkg.license]), //open license
+    ol: !! (pkg.license && LICENSES[pkg.license]), //open license
     of: 0, //open format
     uri: 0, //uri
     re: 0, //re-usable for human and machine => structured, description and metadata
@@ -66,7 +94,7 @@ function rate(pkg, opts){
     scores.re++;
   }
 
-  ['dataset', 'code', 'figure', 'article'].forEach(function(t){
+  [ 'dataset', 'code', 'figure', 'article', 'audio', 'video' ].forEach(function(t){
     if(t in pkg){
       pkg[t].forEach(function(r){
         var grade = rateResource(r);
@@ -87,6 +115,7 @@ function rate(pkg, opts){
 };
 
 function rateResource(r, license, opts){
+
   if((arguments.length === 2) && typeof license !== 'string'){
     opts = license;
     license = undefined;
@@ -95,21 +124,29 @@ function rateResource(r, license, opts){
   opts = opts || {};
 
   var scores = {
-    ol: !! (license && licenses[license]),
+
+    ol: !! (license && LICENSES[license]),
+
     uri: !! r['@id'],
-    of: !! (img[r.encodingFormat] ||
-            article[r.encoding && r.encoding.encodingFormat] ||
-            (r.distribution && data[r.distribution.encodingFormat]) ||
-            (r.programmingLanguage && r.programmingLanguage.name && lang[r.programmingLanguage.name.toLowerCase()])),
+
+    of: !! (( r.figure && (r.figure.filter(function(x){ return FIGURE[x.encodingFormat];})).length) ||
+            ( r.video && (r.video.filter(function(x){ return VIDEO[x.encodingFormat];})).length) ||
+            ( r.audio && (r.audio.filter(function(x){ return AUDIO[x.encodingFormat];})).length) ||
+            ( r.encoding && (r.encoding.filter(function(x){ return ARTICLE[x.encodingFormat];})).length) ||
+            (r.distribution && (r.distribution.filter(function(x){ return DATA[x.encodingFormat];})).length) ||
+            (r.programmingLanguage && r.programmingLanguage.name && LANG[r.programmingLanguage.name.toLowerCase()])),
+
     re: !! ( (r.description && r.description.trim()) || _isRe(r.about) || r.caption ),
+
     ld: !! ( (r.isBasedOnUrl && r.isBasedOnUrl.length) ||
-             (r.targetProduct &&  r.targetProduct.input && Object.keys(r.targetProduct.input).length) ||
+             (r.targetProduct &&  r.targetProduct.filter(function(x){ return x.input && Object.keys(x.input).length; })) ||
              (r._input && r._input.length) ||
              r.discussionUrl ||
              r.codeRepository ||
              _isLdAbout(r.about) ||
              _isLdCitation(r.citation)
            )
+
   };
 
   return (opts.string) ? toString(scores): scores;

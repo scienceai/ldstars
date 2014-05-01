@@ -4,33 +4,33 @@ var assert = require('assert')
 describe('stars', function(){
 
   it('should give no stars if dataset got nothing good', function(){
-    var s = ldstars.rate({});   
+    var s = ldstars.rate({});
     assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: false });
   });
 
   it('should give an "ol" star if license is open', function(){
-    var s = ldstars.rate({license: 'CC0-1.0'});   
+    var s = ldstars.rate({license: 'CC0-1.0'});
     assert.deepEqual(s, { ol: true, of: false, re: false, uri:false, ld: false });
   });
 
   it('should give an "of" star if dataset use open format', function(){
-    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'text/csv'}}]});   
+    var s = ldstars.rate({dataset: [{distribution: [{encodingFormat: 'text/csv'}]}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
   it('should not give an "of" star if dataset do not use open format', function(){
-    var s = ldstars.rate({dataset: [{distribution: {encodingFormat: 'application/vnd.ms-excel'}}]});   
+    var s = ldstars.rate({dataset: [{distribution: [{encodingFormat: 'application/vnd.ms-excel'}]}]});
     assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: false });
   });
 
 
   it('should give an "of" star if code use open format', function(){
-    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]});   
+    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
   it('should give an "of" star if figure use open format', function(){
-    var s = ldstars.rate({figure: [{encodingFormat: 'image/png'}]});   
+    var s = ldstars.rate({figure: [{figure: [{encodingFormat: 'image/png'}]}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
@@ -38,8 +38,8 @@ describe('stars', function(){
     ['dataset', 'code', 'figure'].forEach(function(t){
       var ctnr = {};
       ctnr[t] = [{description:'a'}];
-      
-      var s = ldstars.rate(ctnr);   
+
+      var s = ldstars.rate(ctnr);
       assert.deepEqual(s, { ol: false, of: false, re: true, uri:false, ld: false });
     });
   });
@@ -53,15 +53,15 @@ describe('stars', function(){
     ['dataset', 'code', 'figure'].forEach(function(t){
       var ctnr = {};
       ctnr[t] = [{isBasedOnUrl:['http://ex.com']}];
-      
-      var s = ldstars.rate(ctnr);   
+
+      var s = ldstars.rate(ctnr);
       assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: true });
     });
   });
-  
+
   it('should give an "ld" star if a dataset got a about with sameAs url', function(){
     var ctnr = {
-      dataset: [ 
+      dataset: [
         {
           'about': [
             { name: "a", sameAs: 'http://ex.com/a'},
@@ -70,13 +70,13 @@ describe('stars', function(){
         }
       ]
     };
-    
+
     var s = ldstars.rate(ctnr);
     assert.deepEqual(s, { ol: false, of: false, re: false, uri:false, ld: true });
   });
 
   it('should give an "of and ld" star if article use open format and citation with URL', function(){
-    var s = ldstars.rate({article: [{encoding: {encodingFormat: 'text/x-markdown'}, citation: [{url:'http://ex.com'}]}]});   
+    var s = ldstars.rate({article: [{encoding: [{encodingFormat: 'text/x-markdown'}], citation: [{url:'http://ex.com'}]}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: true });
   });
 
@@ -86,30 +86,30 @@ describe('stars', function(){
       code: [ {description:'b'} ],
       figure: [ {isBasedOnUrl:['http://ex.com']} ],
     };
-    
-    var s = ldstars.rate(ctnr);   
+
+    var s = ldstars.rate(ctnr);
 
     assert.deepEqual(s, { ol: false, of: false, re: true, uri:false, ld: false });
   });
 
   it('should convert a score object to a string', function(){
-    var s = ldstars.toString({ ol: false, of: false, re: true, uri:false, ld: true });   
+    var s = ldstars.toString({ ol: false, of: false, re: true, uri:false, ld: true });
     assert.equal(s, 're-ld');
   });
 
 
   it('should give an "of" star if code use open format and return a string', function(){
-    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]}, {string: true});   
+    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]}, {string: true});
     assert.equal(s, 'of');
   });
 
   it('should give an "ol-of" rate', function(){
-    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, 'CC0-1.0', {string: true});   
+    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, 'CC0-1.0', {string: true});
     assert.equal(s, 'ol-of');
   });
 
   it('should give an "of" rate', function(){
-    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, {string: true});   
+    var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, {string: true});
     assert.equal(s, 'of');
   });
 
