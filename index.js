@@ -129,9 +129,9 @@ function rateResource(r, license, opts){
 
     uri: !! r['@id'],
 
-    of: !! (( r.figure && (r.figure.filter(function(x){ return FIGURE[x.encodingFormat];})).length) ||
-            ( r.video && (r.video.filter(function(x){ return VIDEO[x.encodingFormat];})).length) ||
-            ( r.audio && (r.audio.filter(function(x){ return AUDIO[x.encodingFormat];})).length) ||
+    of: !! (( r.encoding && (r.encoding.filter(function(x){ return FIGURE[x.encodingFormat];})).length) ||
+            ( r.encoding && (r.encoding.filter(function(x){ return VIDEO[x.encodingFormat];})).length) ||
+            ( r.encoding && (r.encoding.filter(function(x){ return AUDIO[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return ARTICLE[x.encodingFormat];})).length) ||
             (r.distribution && (r.distribution.filter(function(x){ return DATA[x.encodingFormat];})).length) ||
             (r.programmingLanguage && r.programmingLanguage.name && LANG[r.programmingLanguage.name.toLowerCase()])),

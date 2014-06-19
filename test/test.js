@@ -30,7 +30,7 @@ describe('stars', function(){
   });
 
   it('should give an "of" star if figure use open format', function(){
-    var s = ldstars.rate({figure: [{figure: [{encodingFormat: 'image/png'}]}]});
+    var s = ldstars.rate({figure: [{encoding: [{encodingFormat: 'image/png'}]}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
