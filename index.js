@@ -133,7 +133,16 @@ function rateResource(r, license, opts){
             ( r.encoding && (r.encoding.filter(function(x){ return VIDEO[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return AUDIO[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return ARTICLE[x.encodingFormat];})).length) ||
-            (r.distribution && (r.distribution.filter(function(x){ return DATA[x.encodingFormat];})).length) ||
+            (r.distribution && (r.distribution.filter(function(x){ 
+              var format;
+              if(x.contentData && !x.encodingFormat){           
+                format = (typeof x.contentData === 'string') ? 'text/plain':
+                  (x.indexOf('@context') !== -1) ? 'application/ld+json' : 'application/json';
+              } else {
+                format = x.encodingFormat;
+              }
+              return DATA[format];
+            })).length) ||
             (r.programmingLanguage && r.programmingLanguage.name && LANG[r.programmingLanguage.name.toLowerCase()])),
 
     re: !! ( (r.description && r.description.trim()) || _isRe(r.about) || r.caption ),
