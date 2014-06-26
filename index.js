@@ -136,8 +136,9 @@ function rateResource(r, license, opts){
             (r.distribution && (r.distribution.filter(function(x){ 
               var format;
               if(x.contentData && !x.encodingFormat){           
+                var s = (typeof x.contentData === 'string') ? x.contentData: JSON.stringify(x.contentData);
                 format = (typeof x.contentData === 'string') ? 'text/plain':
-                  (x.indexOf('@context') !== -1) ? 'application/ld+json' : 'application/json';
+                  (s.indexOf('@context') !== -1) ? 'application/ld+json' : 'application/json';
               } else {
                 format = x.encodingFormat;
               }
