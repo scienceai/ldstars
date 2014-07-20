@@ -15,7 +15,7 @@ var DATA = {
   'application/x-ldjson': true
 };
 
-var FIGURE = {
+var IMAGE = {
   'image/png':true,
   'image/jpeg':true,
   'image/tiff':true,
@@ -94,7 +94,7 @@ function rate(pkg, opts){
     scores.re++;
   }
 
-  [ 'dataset', 'code', 'figure', 'article', 'audio', 'video' ].forEach(function(t){
+  [ 'dataset', 'sourceCode', 'image', 'article', 'audio', 'video' ].forEach(function(t){
     if(t in pkg){
       pkg[t].forEach(function(r){
         var grade = rateResource(r);
@@ -129,7 +129,7 @@ function rateResource(r, license, opts){
 
     uri: !! r['@id'],
 
-    of: !! (( r.encoding && (r.encoding.filter(function(x){ return FIGURE[x.encodingFormat];})).length) ||
+    of: !! (( r.encoding && (r.encoding.filter(function(x){ return IMAGE[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return VIDEO[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return AUDIO[x.encodingFormat];})).length) ||
             ( r.encoding && (r.encoding.filter(function(x){ return ARTICLE[x.encodingFormat];})).length) ||
@@ -235,3 +235,4 @@ function _isRe(about){
 exports.rate = rate;
 exports.rateResource = rateResource;
 exports.toString = toString;
+

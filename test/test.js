@@ -24,18 +24,18 @@ describe('stars', function(){
   });
 
 
-  it('should give an "of" star if code use open format', function(){
-    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]});
+  it('should give an "of" star if sourceCode use open format', function(){
+    var s = ldstars.rate({sourceCode: [{programmingLanguage: {name: 'python'}}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
-  it('should give an "of" star if figure use open format', function(){
-    var s = ldstars.rate({figure: [{encoding: [{encodingFormat: 'image/png'}]}]});
+  it('should give an "of" star if image use open format', function(){
+    var s = ldstars.rate({image: [{encoding: [{encodingFormat: 'image/png'}]}]});
     assert.deepEqual(s, { ol: false, of: true, re: false, uri:false, ld: false });
   });
 
-  it('should give a "re" star if dataset a code or a figure got a description', function(){
-    ['dataset', 'code', 'figure'].forEach(function(t){
+  it('should give a "re" star if dataset a sourceCode or a image got a description', function(){
+    ['dataset', 'sourceCode', 'image'].forEach(function(t){
       var ctnr = {};
       ctnr[t] = [{description:'a'}];
 
@@ -49,8 +49,8 @@ describe('stars', function(){
     assert.deepEqual(s, { ol: false, of: false, re: true, uri:false, ld: false });
   });
 
-  it('should give an "ld" star if dataset a code or a figure got a isBasedOnUrl', function(){
-    ['dataset', 'code', 'figure'].forEach(function(t){
+  it('should give an "ld" star if dataset a sourceCode or a image got a isBasedOnUrl', function(){
+    ['dataset', 'sourceCode', 'image'].forEach(function(t){
       var ctnr = {};
       ctnr[t] = [{isBasedOnUrl:['http://ex.com']}];
 
@@ -83,8 +83,8 @@ describe('stars', function(){
   it('should give a star if more than half of resource are good', function(){
     var ctnr = {
       dataset: [ {description:'a'} ],
-      code: [ {description:'b'} ],
-      figure: [ {isBasedOnUrl:['http://ex.com']} ],
+      sourceCode: [ {description:'b'} ],
+      image: [ {isBasedOnUrl:['http://ex.com']} ],
     };
 
     var s = ldstars.rate(ctnr);
@@ -98,8 +98,8 @@ describe('stars', function(){
   });
 
 
-  it('should give an "of" star if code use open format and return a string', function(){
-    var s = ldstars.rate({code: [{programmingLanguage: {name: 'python'}}]}, {string: true});
+  it('should give an "of" star if sourceCode use open format and return a string', function(){
+    var s = ldstars.rate({sourceCode: [{programmingLanguage: {name: 'python'}}]}, {string: true});
     assert.equal(s, 'of');
   });
 
