@@ -95,7 +95,7 @@ function rate(pkg, opts){
   }
 
   [ 'dataset', 'sourceCode', 'image', 'article', 'audio', 'video' ].forEach(function(t){
-    if(t in pkg){
+    if (t in pkg && Array.isArray(pkg[t])) {
       pkg[t].forEach(function(r){
         var grade = rateResource(r);
         for(var key in grade){
