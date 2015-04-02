@@ -113,5 +113,13 @@ describe('stars', function(){
     assert.equal(s, 'of');
   });
 
+  it('#1 should not throw an error if the package has non-array rateable property', function() {
+    var resource = { license: 'CC0-1.0', image: {} };
+    var s;
+    assert.doesNotThrow(function() {
+      s = ldstars.rate(resource);
+    }, TypeError);
+    assert.deepEqual(s, { ol: true, of: false, uri: false, re: false, ld: false });
+  });
 
 });
