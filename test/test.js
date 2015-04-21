@@ -122,4 +122,43 @@ describe('stars', function(){
     assert.deepEqual(s, { ol: true, of: false, uri: false, re: false, ld: false });
   });
 
+  it('#2 should convert a score object to a number between 0 and 5', function() {
+    var fiveStars = { ol: true,  of: true,  re: true,  uri: true,  ld: true  };
+    var fourStars = { ol: true,  of: true,  re: true,  uri: true,  ld: false };
+    var zeroStars = { ol: false, of: false, re: false, uri: false, ld: false };
+
+    assert.equal(ldstars.toNumber(fiveStars), 5);
+    assert.equal(ldstars.toNumber(fourStars), 4);
+    assert.equal(ldstars.toNumber(zeroStars), 0);
+  });
+
+  it('accepts "string" and "number" options to return different output', function() {
+    var encoding = {
+      license: 'CC0-1.0',
+      sourceCode: [
+        {
+          programmingLanguage: {
+            name: 'python'
+          }
+        }
+      ]
+    };
+
+    assert.equal(ldstars.rate(encoding, { string: true }), 'ol-of');
+    assert.equal(ldstars.rate(encoding, { number: true }), 2);
+  });
+
+  it('defaults to a number rating when multiple options are passed', function() {
+    var encoding = {
+      sourceCode: [
+        {
+          programmingLanguage: {
+            name: 'python'
+          }
+        }
+      ]
+    };
+
+    assert.equal(ldstars.rate(encoding, { string: true, number: true }), 1);
+  });
 });

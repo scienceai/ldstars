@@ -110,9 +110,14 @@ function rate(pkg, opts){
     scores[t] = (scores[t]/n >= 0.5);
   });
 
-  return (opts.string) ? toString(scores): scores;
-
-};
+  if (opts.number) {
+    return toNumber(scores);
+  } else if (opts.string) {
+    return toString(scores);
+  } else {
+    return scores;
+  }
+}
 
 function rateResource(r, license, opts){
 
@@ -174,6 +179,15 @@ function toString(scores){
   return s.join('-');
 };
 
+/**
+ * returns a 0 to 5 star rating based on the output of `rate()`
+ */
+function toNumber(scores) {
+  return Object.keys(scores || {})
+    .reduce(function(stars, category) {
+      return (scores[category] && (stars + 1)) || stars;
+    }, 0);
+}
 
 /**
  * check if an about got urls
@@ -235,4 +249,5 @@ function _isRe(about){
 exports.rate = rate;
 exports.rateResource = rateResource;
 exports.toString = toString;
+exports.toNumber = toNumber;
 
