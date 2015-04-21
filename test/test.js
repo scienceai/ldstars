@@ -101,7 +101,7 @@ describe('ldstars', function(){
       assert.deepEqual(s, { ol: true, of: false, uri: false, re: false, ld: false });
     });
 
-    it('#2 defaults to a number rating when multiple options are passed', function() {
+    it('#3 defaults to a number rating when multiple options are passed', function() {
       var encoding = {
         sourceCode: [
           {
@@ -141,7 +141,7 @@ describe('ldstars', function(){
   });
 
   describe('toNumber()', function() {
-    it('#2 should convert a score object to a number between 0 and 5', function() {
+    it('#3 should convert a score object to a number between 0 and 5', function() {
       var fiveStars = { ol: true,  of: true,  re: true,  uri: true,  ld: true  };
       var fourStars = { ol: true,  of: true,  re: true,  uri: true,  ld: false };
       var zeroStars = { ol: false, of: false, re: false, uri: false, ld: false };
