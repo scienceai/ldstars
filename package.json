@@ -4,7 +4,9 @@
   "description": "Rate (as in five ldstars linked data) a package.jsonld ",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "coverage": "rm -rf coverage; istanbul cover _mocha -- --recursive --reporter spec --bail",
+    "publish-coverage": "cat coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,8 @@
   },
   "homepage": "https://github.com/standard-analytics/ldstars",
   "devDependencies": {
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.13",
     "mocha": "~1.17.1"
   },
   "dependencies": {

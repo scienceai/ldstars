@@ -116,7 +116,7 @@ describe('ldstars', function(){
     });
   });
 
-  describe('rateResource()' function() {
+  describe('rateResource()', function() {
     it('should give an "ol-of" rate', function(){
       var s = ldstars.rateResource({programmingLanguage: {name: 'python'}}, 'CC0-1.0', {string: true});
       assert.equal(s, 'ol-of');
