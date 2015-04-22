@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "coverage": "rm -rf coverage; istanbul cover _mocha -- --recursive --reporter spec --bail",
-    "publish-coverage": "cat coverage/lcov.info | coveralls"
+    "coverage": "rm -rf coverage; istanbul cover ./node_modules/.bin/_mocha -- --recursive --reporter spec --bail",
+    "publish-coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,9 @@
   },
   "keywords": [
     "rate",
-    "linked-data",
+    "linked data",
+    "linked open data",
+    "5 stars data",
     "five",
     "ldstars",
     "certification",
@@ -32,6 +34,7 @@
     "mocha": "~1.17.1"
   },
   "dependencies": {
-    "is-url": "^1.0.0"
+    "is-url": "^1.0.0",
+    "mocha": "^2.2.4"
   }
 }
