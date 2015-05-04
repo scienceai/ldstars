@@ -1,7 +1,7 @@
 {
   "name": "ldstars",
-  "version": "0.6.1",
-  "description": "Rate (as in five ldstars linked data) a package.jsonld ",
+  "version": "0.7.0",
+  "description": "Rate (as in five ldstars linked data) a schema.org CreativeWork",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -34,6 +34,6 @@
     "mocha": "^2.2.4"
   },
   "dependencies": {
-    "is-url": "^1.0.0"
+    "es6-collections": "^0.5.1"
   }
 }

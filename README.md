@@ -33,15 +33,21 @@ Developed by Tim Berners-Lee, the purpose of the 5-star rating system is to enco
 var ldstars = require('ldstars');
 ```
 
-A scores object is as follows:
+### ldstars.rate(doc [, opts])
+
+Rates a schema.org [CreativeWork](http://schema.org/CreativeWork) JSON-LD document.
+
+`opts` include `string: true` or `number: true`.
+
+returns a score object.
 
 ```
-{ 
-  ol: true,  
-  of: true,  
-  re: true,  
-  uri: true,  
-  ld: true  
+{
+  ol: true,
+  of: true,
+  re: true,
+  uri: true,
+  ld: true
 }
 ```
 
@@ -55,32 +61,6 @@ A scores object is as follows:
 
 + `ld`: linked data
 
-### ldstars.rate(package [, opts])
-
-Rates a package containing any or all of `dataset`, `sourceCode`, `image`, `article`, `audio`, or `video`, calling `rateResource` for each.
-
-`opts` include `string: true` or `number: true`.
-
-
-### ldstars.rateResource(resource, license [, opts])
-
-Rates a resource +/- license:
-
-```
-ldstars.rateResource(
-  {
-    programmingLanguage: { 
-      name: 'python' 
-    }
-  }, 
-  'CC0-1.0', 
-  { 
-    string: true 
-  }
-)
-```
-
-returns `'ol-of'`.
 
 ### ldstars.toString(scores)
 
@@ -102,4 +82,3 @@ ldstars.toNumber({ ol: true,  of: true,  re: true,  uri: true,  ld: true  })
 ```
 
 returns `5`.
-
