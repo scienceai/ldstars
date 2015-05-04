@@ -52,13 +52,9 @@ returns a score object.
 ```
 
 + `ol`: open license
-
 + `of`: open format
-
 + `re`: machine readable
-
 + `uri`: uniform resource identifiers
-
 + `ld`: linked data
 
 

@@ -1,9 +1,9 @@
+var spdxLicenseList = require('spdx-license-list');
 require('es6-collections');
 
-//TODO scrap from http://spdx.org/licenses/ and publish in JSON-LD as an npm module
-var FREE_LICENSES = new Set([
-  'CC0-1.0'
-]);
+var FREE_LICENSES = new Set(Object.keys(spdxLicenseList).filter(function(key){
+  return spdxLicenseList[key].osiApproved || /^CC/.test(key);
+}));
 
 var NON_FREE = new Set([
   'application/vnd.ms-excel',
