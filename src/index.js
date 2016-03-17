@@ -185,6 +185,7 @@ export function isLd(r, _isNested) {
   for(var i = 0; i < r.length; i++) {
     if ((_isNested && r[i]['@id']) ||
         (_isNested && r[i].url) ||
+        (_isNested && (typeof r[i] == 'string')) ||
         (r[i].sameAs && (!Array.isArray(r[i].sameAs) || r[i].sameAs.length)) ||
         (r[i].isBasedOnUrl && (!Array.isArray(r[i].isBasedOnUrl) || r[i].isBase)) ||
         (r[i].about && isLd(r[i].about, true)) ||
