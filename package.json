@@ -1,8 +1,8 @@
 {
   "name": "ldstars",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Rate (as in five ldstars linked data) a schema.org CreativeWork",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha --compilers js:babel-register --bail",
     "build": "rm -rf dist && ./node_modules/.bin/babel src --out-dir dist",
