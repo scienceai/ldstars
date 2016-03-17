@@ -1,6 +1,6 @@
 {
   "name": "ldstars",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Rate (as in five ldstars linked data) a schema.org CreativeWork",
   "main": "dist/index.js",
   "scripts": {
