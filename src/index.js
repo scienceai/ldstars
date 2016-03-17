@@ -33,7 +33,7 @@ const NON_FREE_LANG = new Set([
 ]);
 
 export function rate(doc, opts = {}) {
-  var scores = {
+  var ratings = {
     ol: !! isOl(doc),
     uri: !! isUri(doc),
     of: !! isOf(doc),
@@ -41,13 +41,13 @@ export function rate(doc, opts = {}) {
     ld: !! isLd(doc)
   };
 
-  return opts.string ? toString(scores) : scores;
+  return opts.string ? toString(ratings) : ratings;
 };
 
-export function toString(scores) {
+export function toString(ratings) {
   var s = [];
   ['ol', 're', 'of', 'uri', 'ld'].forEach(function(x) {
-    if(scores[x]) {
+    if(ratings[x]) {
       s.push(x);
     }
   });
@@ -183,16 +183,19 @@ export function isLd(r, _isNested) {
   r = Array.isArray(r) ? r : [r];
 
   for(var i = 0; i < r.length; i++) {
-    if ((_isNested && r[i]['@id']) ||
-        (_isNested && r[i].url) ||
-        (_isNested && (typeof r[i] == 'string')) ||
-        (r[i].sameAs && (!Array.isArray(r[i].sameAs) || r[i].sameAs.length)) ||
-        (r[i].isBasedOnUrl && (!Array.isArray(r[i].isBasedOnUrl) || r[i].isBase)) ||
-        (r[i].about && isLd(r[i].about, true)) ||
-        (r[i].citation && isLd(r[i].citation, true)) ||
-        r[i].exampleOfWork ||
-        r[i].discussionUrl ||
-        r[i].codeRepository
+    if (
+      (_isNested && r[i]['@id']) ||
+      (_isNested && r[i].url) ||
+      (_isNested && (typeof r[i] == 'string')) ||
+      (r[i].sameAs && (!Array.isArray(r[i].sameAs) || r[i].sameAs.length)) ||
+      (r[i].isBasedOnUrl && (!Array.isArray(r[i].isBasedOnUrl) || r[i].isBasedOnUrl.length)) ||
+      (r[i].about && isLd(r[i].about, true)) ||
+      (r[i].citation && isLd(r[i].citation, true)) ||
+      (r[i].mainEntity && isLd(r[i].mainEntity, true)) ||
+      (r[i].mainEntityOfPage && isLd(r[i].mainEntityOfPage, true)) ||
+      r[i].exampleOfWork ||
+      r[i].discussionUrl ||
+      r[i].codeRepository
     ) {
       return true;
     }

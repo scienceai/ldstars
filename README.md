@@ -35,7 +35,7 @@ Rates a schema.org [CreativeWork](http://schema.org/CreativeWork) JSON-LD docume
 
 `opts` include `string: true`.
 
-returns a score object.
+returns a rating object.
 
 ```
 {
@@ -54,9 +54,9 @@ returns a score object.
 + `ld`: linked data
 
 
-### ldstars.toString(scores)
+### ldstars.toString(rating)
 
-Converts a score object to a string:
+Converts a rating object to a string:
 
 ```
 ldstars.toString({ ol: false, of: false, re: true, uri:false, ld: true })
