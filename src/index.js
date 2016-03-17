@@ -1,11 +1,16 @@
-var spdxLicenseList = require('spdx-license-list');
-require('es6-collections');
+import spdxLicenseList from 'spdx-license-list';
 
-var FREE_LICENSES = new Set(Object.keys(spdxLicenseList).filter(function(key){
+const FREE_LICENSES = new Set(Object.keys(spdxLicenseList).filter(key => {
   return spdxLicenseList[key].osiApproved || /^CC/.test(key);
 }));
 
-var NON_FREE = new Set([
+const FREE_LICENSE_URLS = new Set(
+  Object.keys(spdxLicenseList).filter(key => {
+    return spdxLicenseList[key].url && spdxLicenseList[key].osiApproved || /^CC/.test(key);
+  }).map(key => spdxLicenseList[key].url)
+);
+
+const NON_FREE = new Set([
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 
@@ -22,35 +27,24 @@ var NON_FREE = new Set([
   'application/mathematica'
 ]);
 
-var NON_FREE_LANG = new Set([
+const NON_FREE_LANG = new Set([
   'matlab',
   'mathematica'
 ]);
 
-
-function rate(doc, opts) {
-
-  opts = opts || {};
-
+export function rate(doc, opts = {}) {
   var scores = {
-    ol: !! (doc.license && FREE_LICENSES.has(doc.license)),
-    uri: !! (doc['@id'] || doc.url),
-    of: !! _isOf(doc),
-    re: !! _isRe(doc),
-    ld: !! _isLd(doc)
+    ol: !! isOl(doc),
+    uri: !! isUri(doc),
+    of: !! isOf(doc),
+    re: !! isRe(doc),
+    ld: !! isLd(doc)
   };
 
-  if (opts.number) {
-    return toNumber(scores);
-  } else if (opts.string) {
-    return toString(scores);
-  } else {
-    return scores;
-  }
+  return opts.string ? toString(scores) : scores;
 };
 
-function toString(scores) {
-
+export function toString(scores) {
   var s = [];
   ['ol', 're', 'of', 'uri', 'ld'].forEach(function(x) {
     if(scores[x]) {
@@ -63,14 +57,50 @@ function toString(scores) {
 
 
 /**
- * returns a 0 to 5 star rating based on the output of `rate()`
+ * check if a resource is URI: (use URIs to denote things, so that
+ * people can point at your stuff)
  */
-function toNumber(scores) {
-  return Object.keys(scores || {})
-               .reduce(function(stars, category) {
-                 return (scores[category] && (stars + 1)) || stars;
-               }, 0);
-}
+export function isUri(r) {
+  return (
+    r['@id'] ||
+    r.url ||
+    (r.sameAs && (!Array.isArray(r.sameAs) || r.sameAs.length))
+  );
+};
+
+
+/**
+ * check if a resource is OL: open license
+ */
+export function isOl(r) {
+  if (!r.license) return false;
+
+  if (
+    FREE_LICENSE_URLS.has(r.license['@id']) ||
+    FREE_LICENSE_URLS.has(r.license.url)
+  ) {
+    return true;
+  }
+
+  if (r.sameAs) {
+    const sameAs = Array.isArray(sameAs) ? sameAs : [sameAs];
+    if (sameAs.some(uri => FREE_LICENSE_URLS.has(uri))) {
+      return true;
+    }
+  }
+
+  if (typeof r.license === 'string') {
+    if (FREE_LICENSE_URLS.has(r.license)) {
+      return true;
+    }
+  } else {
+    if (FREE_LICENSES.has(r.license.name) || FREE_LICENSES.has(r.license.alternateName)) {
+      return true;
+    }
+  }
+
+  return false;
+};
 
 
 
@@ -79,13 +109,12 @@ function toNumber(scores) {
  * check if a resource is Of: use non-proprietary formats (e.g.,
  * CSV instead of Excel)
  */
-function _isOf(r) {
+export function isOf(r) {
 
   var encoding = r.encoding || r.distribution || r;
   var encodings = Array.isArray(encoding) ? encoding : [encoding];
-  var formats = encodings.filter(function(x) {return x.encodingFormat || x.fileFormat;})
-                         .map(function(x) {return x.encodingFormat || x.fileFormat;});
-
+  var formats = encodings.filter(x => x.fileFormat)
+                         .map(x =>  x.fileFormat);
 
   if (r.programmingLanguage && r.programmingLanguage.name) {
     return ! NON_FREE_LANG.has(r.programmingLanguage.name);
@@ -95,14 +124,14 @@ function _isOf(r) {
     return true; //no content and not code JSON-LD is OK
   }
 
-}
+};
 
 
 /**
  * check if a resource is Re: Make it available as structured data
  * (e.g., Excel instead of image scan of a table)
  */
-function _isRe(r) {
+export function isRe(r) {
   var isMedia;
   var encoding = r.encoding || r;
   var encodings = Array.isArray(encoding) ? encoding : [encoding];
@@ -110,7 +139,7 @@ function _isRe(r) {
 
   if (encodings.length) {
     if (encodings.every(function(x) {
-      return reMedia.test(x.encodingFormat);
+      return reMedia.test(x.fileFormat);
     })) {
       isMedia = true;
     };
@@ -119,8 +148,9 @@ function _isRe(r) {
   if (isMedia) {
     //we check that it as some machine readable metadata
     return r.description || r.caption || r.transcript;
-  } else if (r.sourceCode) {
-    //it's a sofware application linked to it's source code
+  } else if (r.targetProductOf) {
+    // currently schema.org lacks a reverse property for targetProduct (on SoftwareSourceCode)
+    // it's a sofware application linked to it's source code
     return true;
   } else {
     //data, article etc... we just check that it's not in an image like format (pdf etc)
@@ -129,7 +159,7 @@ function _isRe(r) {
       content = Array.isArray(content) ? content : [content];
       var reNonRe = /^\s*image|\s*video|\s*audio|\s*application\/pdf|\s*application\/postscript|\s*application\/octet-stream/;
       if (!content.some(function(x) {
-        return ! reNonRe.test(x.encodingFormat || x.fileFormat);
+        return ! reNonRe.test(x.fileFormat);
       })) {
         return false;
       }
@@ -138,15 +168,15 @@ function _isRe(r) {
 
   //there was no content we are good as JSON-LD is machine readable
   return true;
-}
+};
 
 
 /**
- * check if a resource is ld
+ * check if a resource is ld:
  * link your data to other data to provide context
  */
-function _isLd(r, _isNested) {
-  if(!r) {
+export function isLd(r, _isNested) {
+  if (!r) {
     return false;
   }
 
@@ -155,10 +185,11 @@ function _isLd(r, _isNested) {
   for(var i = 0; i < r.length; i++) {
     if ((_isNested && r[i]['@id']) ||
         (_isNested && r[i].url) ||
-        r[i].sameAs ||
-        r[i].isBasedOnUrl ||
-        (r[i].about && _isLd(r[i].about, true)) ||
-        (r[i].citation && _isLd(r[i].citation, true)) ||
+        (r[i].sameAs && (!Array.isArray(r[i].sameAs) || r[i].sameAs.length)) ||
+        (r[i].isBasedOnUrl && (!Array.isArray(r[i].isBasedOnUrl) || r[i].isBase)) ||
+        (r[i].about && isLd(r[i].about, true)) ||
+        (r[i].citation && isLd(r[i].citation, true)) ||
+        r[i].exampleOfWork ||
         r[i].discussionUrl ||
         r[i].codeRepository
     ) {
@@ -168,8 +199,3 @@ function _isLd(r, _isNested) {
 
   return false;
 };
-
-
-exports.rate = rate;
-exports.toString = toString;
-exports.toNumber = toNumber;
