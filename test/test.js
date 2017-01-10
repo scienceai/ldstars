@@ -10,8 +10,9 @@ describe('ldstars', function(){
     });
 
     it('should give an "ol" star if license is open', function(){
-      var s = ldstars.rate({license: {name: 'CC0-1.0'}});
-      assert.deepEqual(s, { ol: true, of: true, re: true, uri:false, ld: false });
+      const expected = { ol: true, of: true, re: true, uri:false, ld: false }
+      assert.deepEqual(ldstars.rate({license: {name: 'CC0-1.0'}}), expected);
+      assert.deepEqual(ldstars.rate({license: 'spdx:CC0-1.0'}), expected);
     });
 
     it('should give an "of" and "re" star if dataset use open machine readable format', function(){

@@ -1,14 +1,30 @@
 import spdxLicenseList from 'spdx-license-list';
 
-const FREE_LICENSES = new Set(Object.keys(spdxLicenseList).filter(key => {
-  return spdxLicenseList[key].osiApproved || /^CC/.test(key);
-}));
-
-const FREE_LICENSE_URLS = new Set(
-  Object.keys(spdxLicenseList).filter(key => {
-    return spdxLicenseList[key].url && spdxLicenseList[key].osiApproved || /^CC/.test(key);
-  }).map(key => spdxLicenseList[key].url)
-);
+const freeSpdxIds = Object.keys(spdxLicenseList).filter(key => {
+  return spdxLicenseList[key].osiApproved || /^CC/.test(key); // add creative common licenses
+});
+function isFreeLicense(value) {
+  if (!value) return false;
+  value = Array.isArray(value) ? value : [value];
+  for (let v of value) {
+    if (typeof v === 'string') {
+      if (
+        freeSpdxIds.some(id => {
+          const license = spdxLicenseList[id];
+          return (
+            v === `spdx:${id}` ||
+            v === id ||
+            v === license.name ||
+            v === license.url
+          );
+        })
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 const NON_FREE = new Set([
   'application/vnd.ms-excel',
@@ -74,35 +90,18 @@ export function isUri(r) {
  */
 export function isOl(r) {
   if (!r.license) return false;
-
-  if (
-    FREE_LICENSE_URLS.has(r.license['@id']) ||
-    FREE_LICENSE_URLS.has(r.license.url)
-  ) {
-    return true;
-  }
-
-  if (r.sameAs) {
-    const sameAs = Array.isArray(sameAs) ? sameAs : [sameAs];
-    if (sameAs.some(uri => FREE_LICENSE_URLS.has(uri))) {
-      return true;
-    }
-  }
-
-  if (typeof r.license === 'string') {
-    if (FREE_LICENSE_URLS.has(r.license)) {
-      return true;
-    }
-  } else {
-    if (FREE_LICENSES.has(r.license.name) || FREE_LICENSES.has(r.license.alternateName)) {
-      return true;
-    }
-  }
-
-  return false;
+  const licenses = Array.isArray(r.license) ? r.license : [r.license];
+  return licenses.some(license => {
+    return (
+      isFreeLicense(license['@id']) ||
+      isFreeLicense(license.url) ||
+      isFreeLicense(license) ||
+      isFreeLicense(license.name) ||
+      isFreeLicense(license.alternateName) ||
+      isFreeLicense(license.sameAs)
+    );
+  });
 };
-
-
 
 
 /**
@@ -110,7 +109,6 @@ export function isOl(r) {
  * CSV instead of Excel)
  */
 export function isOf(r) {
-
   var encoding = r.encoding || r.distribution || r;
   var encodings = Array.isArray(encoding) ? encoding : [encoding];
   var formats = encodings.filter(x => x.fileFormat)
