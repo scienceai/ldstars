@@ -1,11 +1,11 @@
 # ld-stars
 
+[![CircleCI](https://circleci.com/gh/scienceai/ldstars.svg?style=svg)](https://circleci.com/gh/scienceai/ldstars)
+
 Rate (as in
 [five stars linked data](http://www.w3.org/DesignIssues/LinkedData.html))
 a [schema.org](http://schema.org) document in
 [JSON-LD](http://json-ld.org/).
-
-![Logo](http://www.w3.org/DesignIssues/diagrams/lod/597992118v2_350x350_Back.jpg)
 
 ___
 
