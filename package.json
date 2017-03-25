@@ -1,6 +1,6 @@
 {
   "name": "ldstars",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rate (as in five ldstars linked data) a schema.org CreativeWork",
   "main": "dist/index.js",
   "scripts": {
@@ -27,12 +27,12 @@
   },
   "homepage": "https://github.com/standard-analytics/ldstars",
   "dependencies": {
-    "spdx-license-list": "^2.1.0"
+    "spdx-license-list": "^3.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-register": "^6.18.0",
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-register": "^6.24.0",
     "mocha": "^3.2.0"
   }
 }
