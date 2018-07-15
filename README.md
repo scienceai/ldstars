@@ -1,6 +1,8 @@
 # ld-stars
 
-[![CircleCI](https://circleci.com/gh/scienceai/ldstars.svg?style=svg)](https://circleci.com/gh/scienceai/ldstars)
+This is no longer maintained, use [@scienceai/ui](https://github.com/scienceai/ui) instead.
+
+---
 
 Rate (as in
 [five stars linked data](http://www.w3.org/DesignIssues/LinkedData.html))
